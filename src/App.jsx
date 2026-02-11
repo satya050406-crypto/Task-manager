@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import './index.css';
 
-const socket = io(`http://${window.location.hostname}:5577`);
+// Initialized outside to be pre-available, but will be used in a ref for stability
+const SOCKET_URL = `http://${window.location.hostname}:5588`;
+const socket = io(SOCKET_URL, { autoConnect: true });
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -12,6 +14,15 @@ function App() {
   const [userName] = useState(`User_${Math.floor(Math.random() * 1000)}`);
 
   useEffect(() => {
+    console.log("Connecting to:", SOCKET_URL);
+    socket.on('connect', () => {
+      console.log('Connected to server:', socket.id);
+    });
+
+    socket.on('connect_error', (err) => {
+      console.error('Socket connection error:', err);
+    });
+
     socket.on('init_data', (data) => {
       setTasks(data.tasks);
       setMessages(data.messages);

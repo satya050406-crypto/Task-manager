@@ -14,6 +14,10 @@ const io = new Server(server, {
   }
 });
 
+server.on('error', (err) => {
+  console.error('Server error:', err);
+});
+
 const DATA_FILE = path.join(__dirname, 'data.json');
 
 // Initialize data from file or defaults
@@ -86,7 +90,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = 5577;
+const PORT = 5588;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
