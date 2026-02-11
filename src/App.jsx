@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import './index.css';
-
-// Initialized outside to be pre-available, but will be used in a ref for stability
-const SOCKET_URL = `http://${window.location.hostname}:5588`;
-const socket = io(SOCKET_URL, { autoConnect: true });
+// Production-ready socket initialization with environment variable support
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || `http://${window.location.hostname}:5588`;
+const socket = io(SOCKET_URL, {
+  autoConnect: true,
+  transports: ['websocket', 'polling'] // Better compatibility for live hosts
+});
 
 function App() {
   const [tasks, setTasks] = useState([]);
